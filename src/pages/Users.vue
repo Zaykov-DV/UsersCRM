@@ -8,11 +8,11 @@
                   <!--table head-->
                   <thead>
                     <tr>
-                      <th @click="sort('first')">Name</th>
-                      <th @click="sort('last')">Last Name</th>
-                      <th @click="sort('age')">Age</th>
-                      <th @click="sort('gender')">Gender</th>
-                      <th @click="sort('country')">Country</th>
+                      <th @click="sort('first')">Name 	&darr;</th>
+                      <th @click="sort('last')">Last Name 	&darr;</th>
+                      <th @click="sort('age')">Age 	&darr;</th>
+                      <th @click="sort('gender')">Gender 	&darr;</th>
+                      <th @click="sort('country')">Country 	&darr;</th>
                     </tr>
                   </thead>
                   <!--table body-->
@@ -34,9 +34,21 @@
 
                 </table>
               <!--/ table-->
-              <p>debug: sort: {{ currentSort }} , dir: {{ currentSortDir }} </p>
+              <p style="text-align: center"> page: {{ page.current }} , length: {{ page.length }} </p>
+              <p style="text-align: center">debug: sort: {{ currentSort }} , dir: {{ currentSortDir }} </p>
             </div>
         </section>
+
+      <!--  pagination    -->
+      <div class="section">
+        <div class="container">
+          <div class="button-list">
+            <div class="btn btnPrimary" @click="prevPage"> &larr; </div>
+            <div class="btn btnPrimary" @click="nextPage"> &rarr; </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 </template>
 
@@ -47,12 +59,16 @@ export default {
     return {
       users: [],
       currentSort: 'name',
-      currentSortDir: 'asc'
+      currentSortDir: 'asc',
+      page: {
+        current: 1,
+        length: 5
+      }
     }
   },
   created () {
     axios
-        .get('https://randomuser.me/api/?results=50')
+        .get('https://randomuser.me/api/?results=20')
          .then(response => {
            // console.log(response.data)
            this.users = response.data.results
@@ -89,6 +105,10 @@ export default {
         if (a.location[this.currentSort] > b.location[this.currentSort]) return 1 * mod
 
         return 0
+      } ).filter((row, index) => {
+        let start = (this.page.current-1)*this.page.length
+        let end = this.page.current * this.page.length
+        if (index >= start && index < end ) return true
       } )
     }
   },
@@ -98,6 +118,13 @@ export default {
         this.currentSortDir =  (this.currentSortDir === 'asc') ? 'desc' : 'asc'
       }
       this.currentSort = e
+    },
+    // pagination
+    prevPage () {
+      if (this.page.current >1 ) this.page.current-=1
+    },
+    nextPage () {
+      if ((this.page.current * this.page.length) < this.users.length ) this.page.current+=1
     }
   }
 }
@@ -109,5 +136,13 @@ img {
   height: auto;
   border-radius: 50%;
   margin-right: 16px;
+}
+.button-list {
+  width: 100%;
+  text-align: center;
+}
+.btn {
+  border-radius: 60px;
+  margin: 0 20px;
 }
 </style>
