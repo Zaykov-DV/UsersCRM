@@ -1,5 +1,6 @@
 # User CRM
-
+https://zaykov-dv.github.io/UsersCRM/
+Take users from API https://randomuser.me/ with sorting and pagination
 
 
 ## Project setup
